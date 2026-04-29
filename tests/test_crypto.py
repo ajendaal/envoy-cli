@@ -61,3 +61,14 @@ def test_encrypt_unicode_content():
     unicode_text = "KEY=héllo wörld 🔑"
     encoded = encrypt(unicode_text, PASSPHRASE)
     assert decrypt(encoded, PASSPHRASE) == unicode_text
+
+
+@pytest.mark.parametrize("passphrase", [
+    "short",
+    "a" * 64,
+    "passphrase with spaces and $peci@l ch@rs!",
+])
+def test_decrypt_roundtrip_various_passphrases(passphrase):
+    """Encryption/decryption should work correctly for a range of passphrase formats."""
+    encoded = encrypt(SAMPLE_PLAINTEXT, passphrase)
+    assert decrypt(encoded, passphrase) == SAMPLE_PLAINTEXT
