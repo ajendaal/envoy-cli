@@ -67,3 +67,21 @@ def merge(base: dict, override: dict) -> dict:
     merged = dict(base)
     merged.update(override)
     return merged
+
+
+def diff(before: dict, after: dict) -> dict:
+    """Return a summary of changes between two env dicts.
+
+    Args:
+        before: The original env variable mapping.
+        after: The updated env variable mapping.
+
+    Returns:
+        A dict with keys 'added', 'removed', and 'changed', each mapping
+        to a dict of the affected variable names and their new values
+        (or old values for 'removed').
+    """
+    added = {k: after[k] for k in after if k not in before}
+    removed = {k: before[k] for k in before if k not in after}
+    changed = {k: after[k] for k in after if k in before and before[k] != after[k]}
+    return {"added": added, "removed": removed, "changed": changed}
